@@ -277,14 +277,14 @@ func PostQuitMessage(exitCode int) {
 		uintptr(exitCode))
 }
 
-func GetMessage(msg *MSG, hwnd HWND, msgFilterMin, msgFilterMax uint32) int {
+func GetMessage(msg *MSG, hwnd HWND, msgFilterMin, msgFilterMax uint32) bool {
 	ret, _, _ := procGetMessage.Call(
 		uintptr(unsafe.Pointer(msg)),
 		uintptr(hwnd),
 		uintptr(msgFilterMin),
 		uintptr(msgFilterMax))
 
-	return int(ret)
+	return ret != 0
 }
 
 func TranslateMessage(msg *MSG) bool {
@@ -1031,16 +1031,13 @@ func KillTimer(hwnd HWND, nIDEvent uint32) bool {
 	return ret != 0
 }
 
-// it will panic when the function fails
-func RedrawWindow(hWnd HWND, lpRect *RECT, hrgnUpdate HRGN, flag uint32) {
+func RedrawWindow(hWnd HWND, lpRect *RECT, hrgnUpdate HRGN, flag uint32) bool {
 	ret, _, _ := procRedrawWindow.Call(
 		uintptr(hWnd),
 		uintptr(unsafe.Pointer(lpRect)),
 		uintptr(hrgnUpdate),
-		flag,
+		uintptr(flag),
 	)
-	if ret!=0{
-		panic("RedrawWindow fail")
-	}
-	return
+
+	return ret != 0
 }
