@@ -28,6 +28,7 @@ var (
 	procCreateDIBSection          = modgdi32.NewProc("CreateDIBSection")
 	procCreateEnhMetaFile         = modgdi32.NewProc("CreateEnhMetaFileW")
 	procCreateIC                  = modgdi32.NewProc("CreateICW")
+	procCreatePen                 = modgdi32.NewProc("CreatePen")
 	procDeleteDC                  = modgdi32.NewProc("DeleteDC")
 	procDeleteEnhMetaFile         = modgdi32.NewProc("DeleteEnhMetaFile")
 	procEllipse                   = modgdi32.NewProc("Ellipse")
@@ -63,6 +64,10 @@ var (
 	procSetPixelFormat            = modgdi32.NewProc("SetPixelFormat")
 	procSwapBuffers               = modgdi32.NewProc("SwapBuffers")
 )
+
+func RGB(r, g, b int) COLORREF {
+	return COLORREF(r | (g << 8) | (b << 16))
+}
 
 func GetDeviceCaps(hdc HDC, index int) int {
 	ret, _, _ := procGetDeviceCaps.Call(
@@ -214,6 +219,14 @@ func CreateIC(lpszDriver, lpszDevice, lpszOutput *uint16, lpdvmInit *DEVMODE) HD
 		uintptr(unsafe.Pointer(lpdvmInit)))
 
 	return HDC(ret)
+}
+
+func CreatePen(dwPenStyle, dwWidth uint, color COLORREF) HPEN {
+	ret, _, _ := procCreatePen.Call(
+		uintptr(dwPenStyle),
+		uintptr(dwWidth),
+		uintptr(color))
+	return HPEN(ret)
 }
 
 func DeleteDC(hdc HDC) bool {
