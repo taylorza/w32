@@ -13,11 +13,13 @@ import (
 var (
 	moduser32 = syscall.NewLazyDLL("user32.dll")
 
+	procRegisterClass                 = moduser32.NewProc("RegisterClassW")
 	procRegisterClassEx               = moduser32.NewProc("RegisterClassExW")
 	procLoadIcon                      = moduser32.NewProc("LoadIconW")
 	procLoadCursor                    = moduser32.NewProc("LoadCursorW")
 	procShowWindow                    = moduser32.NewProc("ShowWindow")
 	procUpdateWindow                  = moduser32.NewProc("UpdateWindow")
+	procCreateWindow                  = moduser32.NewProc("CreateWindow")
 	procCreateWindowEx                = moduser32.NewProc("CreateWindowExW")
 	procAdjustWindowRect              = moduser32.NewProc("AdjustWindowRect")
 	procAdjustWindowRectEx            = moduser32.NewProc("AdjustWindowRectEx")
@@ -123,6 +125,11 @@ var (
 	procRedrawWindow                  = moduser32.NewProc("RedrawWindow")
 )
 
+func RegisterClass(wndClass *WNDCLASS) ATOM {
+	ret, _, _ := procRegisterClassEx.Call(uintptr(unsafe.Pointer(wndClass)))
+	return ATOM(ret)
+}
+
 func RegisterClassEx(wndClassEx *WNDCLASSEX) ATOM {
 	ret, _, _ := procRegisterClassEx.Call(uintptr(unsafe.Pointer(wndClassEx)))
 	return ATOM(ret)
@@ -176,6 +183,25 @@ func UpdateWindow(hwnd HWND) bool {
 	ret, _, _ := procUpdateWindow.Call(
 		uintptr(hwnd))
 	return ret != 0
+}
+
+func CreateWindow(className, windowName *uint16,
+	style uint, x, y, width, height int, parent HWND, menu HMENU,
+	instance HINSTANCE, param unsafe.Pointer) HWND {
+	ret, _, _ := procCreateWindow.Call(
+		uintptr(unsafe.Pointer(className)),
+		uintptr(unsafe.Pointer(windowName)),
+		uintptr(style),
+		uintptr(x),
+		uintptr(y),
+		uintptr(width),
+		uintptr(height),
+		uintptr(parent),
+		uintptr(menu),
+		uintptr(instance),
+		uintptr(param))
+
+	return HWND(ret)
 }
 
 func CreateWindowEx(exStyle uint, className, windowName *uint16,

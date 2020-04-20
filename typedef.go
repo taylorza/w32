@@ -229,6 +229,20 @@ type RECT struct {
 	Left, Top, Right, Bottom int32
 }
 
+// https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-wndclassw
+type WNDCLASS struct {
+	Style      uint32
+	WndProc    uintptr
+	ClsExtra   int32
+	WndExtra   int32
+	Instance   HINSTANCE
+	Icon       HICON
+	Cursor     HCURSOR
+	Background HBRUSH
+	MenuName   *uint16
+	ClassName  *uint16
+}
+
 // http://msdn.microsoft.com/en-us/library/windows/desktop/ms633577.aspx
 type WNDCLASSEX struct {
 	Size       uint32
