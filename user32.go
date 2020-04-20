@@ -125,11 +125,6 @@ var (
 	procRedrawWindow                  = moduser32.NewProc("RedrawWindow")
 )
 
-func RegisterClass(wndClass *WNDCLASS) ATOM {
-	ret, _, _ := procRegisterClassEx.Call(uintptr(unsafe.Pointer(wndClass)))
-	return ATOM(ret)
-}
-
 func RegisterClassEx(wndClassEx *WNDCLASSEX) ATOM {
 	ret, _, _ := procRegisterClassEx.Call(uintptr(unsafe.Pointer(wndClassEx)))
 	return ATOM(ret)

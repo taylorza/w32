@@ -106,7 +106,7 @@ func AbortDoc(hdc HDC) int {
 	return int(ret)
 }
 
-func BitBlt(hdcDest HDC, nXDest, nYDest, nWidth, nHeight int, hdcSrc HDC, nXSrc, nYSrc int, dwRop uint) {
+func BitBlt(hdcDest HDC, nXDest, nYDest, nWidth, nHeight int, hdcSrc HDC, nXSrc, nYSrc int, dwRop uint) bool {
 	ret, _, _ := procBitBlt.Call(
 		uintptr(hdcDest),
 		uintptr(nXDest),
@@ -118,12 +118,10 @@ func BitBlt(hdcDest HDC, nXDest, nYDest, nWidth, nHeight int, hdcSrc HDC, nXSrc,
 		uintptr(nYSrc),
 		uintptr(dwRop))
 
-	if ret == 0 {
-		panic("BitBlt failed")
-	}
+	return ret != 0
 }
 
-func PatBlt(hdc HDC, nXLeft, nYLeft, nWidth, nHeight int, dwRop uint) {
+func PatBlt(hdc HDC, nXLeft, nYLeft, nWidth, nHeight int, dwRop uint) bool {
 	ret, _, _ := procPatBlt.Call(
 		uintptr(hdc),
 		uintptr(nXLeft),
@@ -132,9 +130,7 @@ func PatBlt(hdc HDC, nXLeft, nYLeft, nWidth, nHeight int, dwRop uint) {
 		uintptr(nHeight),
 		uintptr(dwRop))
 
-	if ret == 0 {
-		panic("PatBlt failed")
-	}
+	return ret != 0
 }
 
 func CloseEnhMetaFile(hdc HDC) HENHMETAFILE {
@@ -470,7 +466,7 @@ func StartPage(hdc HDC) int {
 	return int(ret)
 }
 
-func StretchBlt(hdcDest HDC, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest int, hdcSrc HDC, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc int, dwRop uint) {
+func StretchBlt(hdcDest HDC, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest int, hdcSrc HDC, nXOriginSrc, nYOriginSrc, nWidthSrc, nHeightSrc int, dwRop uint) bool {
 	ret, _, _ := procStretchBlt.Call(
 		uintptr(hdcDest),
 		uintptr(nXOriginDest),
@@ -484,9 +480,7 @@ func StretchBlt(hdcDest HDC, nXOriginDest, nYOriginDest, nWidthDest, nHeightDest
 		uintptr(nHeightSrc),
 		uintptr(dwRop))
 
-	if ret == 0 {
-		panic("StretchBlt failed")
-	}
+	return ret != 0
 }
 
 func SetDIBitsToDevice(hdc HDC, xDest, yDest, dwWidth, dwHeight, xSrc, ySrc int, uStartScan, cScanLines uint, lpvBits []byte, lpbmi *BITMAPINFO, fuColorUse uint) int {
